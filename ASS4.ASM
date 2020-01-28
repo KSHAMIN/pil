@@ -1,5 +1,6 @@
 .model large
 
+ ;function to perform display operation
 disp macro msg
 lea dx,msg
 mov ah,09h
@@ -13,13 +14,13 @@ endm
         str3 db 100 dup('$')
         msg1 db 13,10,'Enter 1st string:$'
         msg2 db 13,10,'Enter 2nd string:$'
-        msg3 db 13,10,'Strings are same!$'
-        msg4 db 13,10,'Strings are not same!$'
+        msg3 db 13,10,'*******Strings are same!*******$'
+        msg4 db 13,10,'*******Strings are not same!*******$'
         msg5 db 13,10,'Concatenated string is:$'
-        msg6 db 13,10,'Invalid Entry!!$'
+        msg6 db 13,10,'*******Invalid Entry!!*******$'
         msg7 db 13,10,'Enter the string whose occurence you want to check:$'
-        msg8 db 13,10,'Given string occurs in main string!!$'
-        msg9 db 13,10,'Given string does not occur in main string!$'
+        msg8 db 13,10,'*******Given string occurs in main string!!*******$'
+        msg9 db 13,10,'*******Given string does not occur in main string!$*******'
         menu1 db 13,10,'1)Input strings:$'
         menu2 db 13,10,'2)Compare strings$'
         menu3 db 13,10,'3)Concatenate strings$'
@@ -32,6 +33,7 @@ endm
                 mov ds,ax
                 
                 menu:
+                	   ;making menu driven program
                 	disp menu1
                 	disp menu2
                 	disp menu3
@@ -40,29 +42,31 @@ endm
                 	disp menu6
                 	
                 	mov ah,01h
-                	int 21h
+                	int 21h			
                 	
-                	cmp al,31h
-                	je input
+                	cmp al,31h		;option 1(taking input)
+                	je input		
                 	
-                	cmp al,32h
-                	je compare
+                	cmp al,32h		;option 2(comparing strings)
+                	je compare		
                 	
-                	cmp al,33h
-                	je concatenate1
+                	cmp al,33h		;option 3(concatenate strings)
+                	je concatenate1		
                 	
                 	cmp al,34h
-                	je occurence
+                	je occurence		;option 4(check substring)
                 	
                 	cmp al,35h
-                	je exit
+                	je exit			;option 5(Exit the program)
                 	disp msg6
                 	jmp menu
                 	
                 occurence:
-                	jmp occurence1
+                	jmp occurence1		;making jump in two steps(single jump cannot be achieved since it is too far)
 
 		input:
+			;code for taking input from user
+			
 			disp msg1
 			
 			xor ax,ax
@@ -99,12 +103,14 @@ endm
                  	       cmp al,13
                  	       jne loop2
                  	       
-		 	jmp menu
+		 	jmp menu		;jump back to menu after code is executed
 		
 		concatenate1:
 			jmp concatenate 
 		 	
-		compare:	
+		compare:
+			;code for comparing two strings
+				
 		 	xor dx,dx
                  	xor ax,ax
                  	lea si,str1
@@ -132,6 +138,8 @@ endm
 			jmp exit1 
                         	
 		concatenate:
+				;code for concatenating two strings
+			
 		  	xor dx,dx
                   	xor ax,ax
                   
@@ -166,6 +174,8 @@ endm
 		  	jmp menu
 		  	
 		occurence1:
+				;code for checking substring occurence
+			
 			lea si,str1
 			xor di,di
 			disp msg7
@@ -189,29 +199,40 @@ endm
 			lea di,str3	
 			
 		  	check:
+			
 		  		mov al,[si]
 		  		mov ah,[di]
 		  		cmp al,ah
 		  		je out2
 		  		inc si
-		  		dec bx
-		  		cmp bx,0
-		  		jne check
+		  		dec cx
+		  		cmp cx,0
+		  		jne check		  		
 		  		jmp out1
 		  		
 		  	out2:
+		  		dec bx
+		  		dec bx
+		  		cmp bx,0
+		  		jle out3
+		  		dec cx
+		  		cmp cx,0
+		  		je out3
 		  		inc si
 		  		inc di
 		  		mov al,[si]
 		  		mov ah,[di]
 		  		cmp al,ah
 		  		je out2
-		  		
-		  	xor dx,dx
-		  	xor ax,ax
+		  		cmp al,ah
+		  		jne out1
 		  	
-		  	disp msg8
-		  	jmp menu
+		  	out3:	
+		  		xor dx,dx
+		  		xor ax,ax
+		  	
+		  		disp msg8
+		  		jmp menu
 		  	
 		  	out1:
 		  		xor dx,dx
@@ -220,6 +241,8 @@ endm
 		  		jmp menu
 		  		 
 		exit1: 	
+			;exiting the code
+				
                   	mov ah,4ch
                   	int 21h
 		
