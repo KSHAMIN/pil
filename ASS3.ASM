@@ -9,19 +9,21 @@ endm
 .stack 100h
 .data
 	str1 db 100 dup('$')
-        msg1 db 13,10,'Enter string:$'
-        msg2 db 13,10,'*******It is a palindrome!*******$'
-        msg3 db 13,10,'*******It is not a palindrome!!*******$'
-        msg4 db 13,10,'     String length is:$'
-        msg5 db 13,10,'     Reversed string is:$'
-        msg6 db 13,10,'*******Invalid Entery*******$'
-        menu1 db 13,10,'*****MENU*****$'
-        menu2 db 13,10,'1)Enter string$'
-        menu3 db 13,10,'2)Find string length$'
-        menu4 db 13,10,'3)Check palindrome$'
-        menu5 db 13,10,'4)Reverse the string$'
-        menu6 db 13,10,'5)Exit$'
-        menu7 db 13,10,'6)Enter your choice$'
+	str2 db 100 dup('$')
+        msg1 db 'Enter string:',13,10,'$'
+        msg2 db '*******It is a palindrome!*******',13,10,'$'
+        msg3 db '*******It is not a palindrome!!*******',13,10,'$'
+        msg4 db '*****String length is:',13,10,'$'
+        msg5 db '*****Reversed string is:',13,10,'$'
+        msg6 db '*******Invalid Entery*******',13,10,'$'
+        menu1 db '*****MENU*****',13,10,'$'
+        menu2 db '1)Enter string',13,10,'$'
+        menu3 db '2)Find string length',13,10,'$'
+        menu4 db '3)Reverse the string',13,10,'$'
+        menu5 db '4)Check palindrome',13,10,'$'
+        menu6 db '5)Exit',13,10,'$'
+        menu7 db '6)Enter your choice:',13,10,'$'
+        count dw 0
 .code
                 mov ax,@data
                 mov ds,ax
@@ -42,19 +44,19 @@ endm
 			je input
 			
 			cmp al,32h
-			je length
+			je length1
 			
 			cmp al,33h
-			je palindrome
-			
-			cmp al,34h
 			je reverse
+			
+			;cmp al,34h
+			;je palindrome
 			
 			cmp al,35h
 			je exit
 			
-			disp msg6
-			jmp menu
+		;	disp msg6
+		;	jmp menu
 			
 		input:
                 	disp msg1
@@ -62,17 +64,75 @@ endm
                 	lea si,str1
                 	mov ah,01h
 	
-  		loop1:
+  			loop1:
+				int 21h
+				mov [si],al
+				inc si
+				inc count
+				cmp al,13
+				jne loop1
+			dec count
+		jmp menu
+		
+		length1:
+			xor ax,ax
+			xor dx,dx
+			
+			disp msg4
+			
+			xor ax,ax
+			xor dx,dx
+	
+			mov ax,count
+			add ax,30h
+			mov dx,ax
+			mov ah,02h
 			int 21h
-			mov [si],al
-			inc si
+		jmp menu
+		
+		exit:
+			jmp exit1
+		
+		reverse:
+
+			
+			xor ax,ax
+			xor dx,dx
+			
+			lea di,str2
+			mov cx,0h
 			inc count
-			cmp al,13
-			jne loop1
-		dec count
-
-
-
+			
+			rloop1:
+				dec si
+				mov al,[si]
+				mov [di],al
+				inc di
+				inc cx
+				dec count
+				cmp count,0
+				jne rloop1
+				
+			xor ax,ax
+			xor dx,dx
+				
+			disp msg5
+			
+			xor ax,ax
+			xor dx,dx
+			
+			lea dx,str2
+			mov ah,09h
+			int 21h
+			
+		jmp menu
+		
+		exit1:
+			mov ah,4ch
+			int 21h
+			
+			end
+	
 
 
 
