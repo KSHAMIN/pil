@@ -1,0 +1,57 @@
+Turbo Assembler	 Version 2.0	    12/18/19 11:08:38	    Page 1
+a1.asm
+A04ASM2	(EXE) Move and add operations
+
+
+      1				     ;----------------------------------------------------------------------
+      2	0000				      .MODEL  SMALL
+      3	0000				      .STACK  64       ;Define stack
+      4	0000				      .Data	       ;Define data
+      5	0000  00AF		      FLDD     DW     175
+      6	0002  0096		      FLDE     DW     150
+      7	0004  ????		      FLDF     DW     ?
+      8				      ;----------------------------------------------------------------------
+      9	0006				       .CODE	       ;Define code segment
+     10	0000			      MAIN     PROC   FAR
+     11	0000  B8 0000s			       MOV    AX,@data ;Set address of data
+     12	0003  8E D8			       MOV    DS,AX    ; segment in DS
+     13	0005  A1 0000r			       MOV    AX,FLDD  ;MOVE 0175 TO AX
+     14	0008  03 06 0002r		       ADD    AX,FLDE  ;ADD 0150 TO AX
+     15	000C  A3 0004r			       MOV    FLDF,AX  ;STORE SUM IN FLDF
+     16	000F  B8 4C00			       MOV    AX,4C00H ;End processing
+     17	0012  CD 21			       INT    21H
+     18	0014			      MAIN     ENDP	       ;End of procedure
+     19					       END    MAIN     ;End of program
+Turbo Assembler	 Version 2.0	    12/18/19 11:08:38	    Page 2
+Symbol Table
+A04ASM2	(EXE) Move and add operations
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/18/19"
+??FILENAME			  Text	 "a1	  "
+??TIME				  Text	 "11:08:38"
+??VERSION			  Number 0200
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 A1
+@MODEL				  Text	 2
+@WORDSIZE			  Text	 2
+FLDD				  Word	 DGROUP:0000
+FLDE				  Word	 DGROUP:0002
+FLDF				  Word	 DGROUP:0004
+MAIN				  Far	 _TEXT:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0040 Para	  Stack	  STACK
+  _DATA				  16  0006 Word	  Public  DATA
+_TEXT				  16  0014 Word	  Public  CODE
+
